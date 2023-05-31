@@ -8,11 +8,10 @@ import (
 )
 
 func TestReflect(t *testing.T) {
-	vc := make(map[string]func() (bool, error))
 	test := Test{}
 	test.FieldA = "okk"
 	test.TestItem = append(test.TestItem, &TestItem{TestField: "okkkk"})
-	err := protoval.Reflect("validate", &test, vc)
+	vc, err := protoval.Validate("validate", &test)
 	if err != nil {
 		t.FailNow()
 	}

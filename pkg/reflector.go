@@ -8,7 +8,7 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
-func Reflect(validationTag string, message proto.Message, vc map[string]func() (bool, error)) (err error) {
+func Reflect(validationTag string, message proto.Message, vc map[string]func() (bool, error), prefix string, index int) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = r.(error)
@@ -33,7 +33,16 @@ func Reflect(validationTag string, message proto.Message, vc map[string]func() (
 			if err != nil {
 				panic(err)
 			}
-			vc[field.TextName()] = func() (bool, error) {
+			name := ""
+			if prefix == "" {
+				name = field.TextName()
+			} else {
+				name = fmt.Sprintf("%s.%s", prefix, field.TextName())
+			}
+			if index != -1 {
+				name += fmt.Sprintf("[%d]", index)
+			}
+			vc[name] = func() (bool, error) {
 				output := true
 				for name, rule := range rules {
 					validator, ok := _rules[name]
@@ -54,14 +63,14 @@ func Reflect(validationTag string, message proto.Message, vc map[string]func() (
 			if field.IsList() {
 				list := reflector.Get(field).List()
 				for i := 0; i < list.Len(); i++ {
-					err := Reflect(validationTag, list.Get(i).Message().Interface(), vc)
+					err := Reflect(validationTag, list.Get(i).Message().Interface(), vc, field.TextName(), i)
 					if err != nil {
 						return err
 					}
 				}
 				continue
 			}
-			err := Reflect(validationTag, reflector.Get(field).Message().Interface(), vc)
+			err := Reflect(validationTag, reflector.Get(field).Message().Interface(), vc, field.TextName(), -1)
 			if err != nil {
 				return err
 			}
