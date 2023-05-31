@@ -6,44 +6,53 @@ import (
 )
 
 var (
-	_rules map[string]func(value any, rule string) (bool, error)
+	_rules map[string]func(name string, value any, rule string) error
 )
 
 func init() {
-	_rules = make(map[string]func(value any, rule string) (bool, error))
+	_rules = make(map[string]func(name string, value any, rule string) error)
 	_rules["required"] = Required
 	_rules["max_len"] = MaxLen
 	_rules["min_len"] = MinLen
 }
 
-func Register(name string, fn func(value any, rule string) (bool, error)) {
+func Register(name string, fn func(name string, value any, rule string) error) {
 	_rules[name] = fn
 }
 
-func Required(value any, rule string) (bool, error) {
-	return value != nil, nil
+func Required(name string, value any, rule string) error {
+	if value == nil {
+		return ErrorF("%s: is required", name)
+	}
+	return nil
 }
 
-func MinLen(value any, rule string) (bool, error) {
+func MinLen(name string, value any, rule string) error {
 	str, ok := value.(string)
 	if !ok {
-		return false, fmt.Errorf("expected string but recieved %T", value)
+		return fmt.Errorf("expected string but recieved %T", value)
 	}
 	i, err := strconv.ParseInt(rule, 10, 32)
 	if err != nil {
-		return false, err
+		return err
 	}
-	return len(str) >= int(i), nil
+	if len(str) < int(i) {
+		return ErrorF("%s should be larger than or equal in size to %d", name, i)
+	}
+	return nil
 }
 
-func MaxLen(value any, rule string) (bool, error) {
+func MaxLen(name string, value any, rule string) error {
 	str, ok := value.(string)
 	if !ok {
-		return false, fmt.Errorf("expected string but recieved %T", value)
+		return fmt.Errorf("expected string but recieved %T", value)
 	}
 	i, err := strconv.ParseInt(rule, 10, 32)
 	if err != nil {
-		return false, err
+		return err
 	}
-	return len(str) <= int(i), nil
+	if len(str) > int(i) {
+		return ErrorF("%s should be smaller than or equal in size to %d", name, i)
+	}
+	return nil
 }

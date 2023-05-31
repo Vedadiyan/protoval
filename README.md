@@ -20,17 +20,14 @@ Then you can use this field option to validate your fields. For example:
 
 In your Golang code, you can invoke your validation pattern by calling the `Validate` method. For example: 
 
-    validationContext, err := protoval.Validate("validate", SomeMessage)
+    validationContext := protoval.New("validate", SomeMessage)
+    err := validationContext.Validate()
     if err != nil {
         // Do something about the error
     }
-    for name, validationFunc := range validationContext {
-        result, err := validationFunc()
-        if err != nil {
-            // Do something about the error
-        }
-        if !result {
-            fmt.Println(name, "failed validation")
+    if !validationContext.IsValid() {
+        for _, err := range validationContext.Errors() {
+            fmt.Println(err)
         }
     }
 

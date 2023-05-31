@@ -11,16 +11,14 @@ func TestReflect(t *testing.T) {
 	test := Test{}
 	test.FieldA = "okk"
 	test.TestItem = append(test.TestItem, &TestItem{TestField: "okkkkkkkkkkkk"})
-	vc, err := protoval.Validate("validate", &test)
+	vc := protoval.New("validate", &test)
+	err := vc.Validate()
 	if err != nil {
 		t.FailNow()
 	}
-	for key, value := range vc {
-		result, err := value()
-		if err != nil {
-			t.FailNow()
-		}
-		fmt.Println(key, result)
+	fmt.Println(vc.IsValid())
+	for _, err := range vc.Errors() {
+		fmt.Println(err)
 	}
 }
 

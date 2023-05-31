@@ -8,7 +8,7 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
-func Reflect(validationTag string, message proto.Message, vc map[string]func() (bool, error), prefix string, index int) (err error) {
+func Reflect(validationTag string, message proto.Message, vc map[string]func() error, prefix string, index int) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = r.(error)
@@ -46,20 +46,18 @@ func Reflect(validationTag string, message proto.Message, vc map[string]func() (
 			if err != nil {
 				panic(err)
 			}
-			vc[name] = func() (bool, error) {
-				output := true
-				for name, rule := range rules {
-					validator, ok := _rules[name]
+			vc[name] = func() error {
+				for ruleName, rule := range rules {
+					validator, ok := _rules[ruleName]
 					if !ok {
-						return false, fmt.Errorf("%s: rule not found", name)
+						return fmt.Errorf("%s: rule not found", ruleName)
 					}
-					result, err := validator(value, rule)
+					err := validator(name, value, rule)
 					if err != nil {
-						return false, err
+						return err
 					}
-					output = output && result
 				}
-				return output, nil
+				return nil
 			}
 			return false
 		})
