@@ -19,6 +19,19 @@ func Reflect(validationTag string, message proto.Message, vc map[string]func() (
 	for i := 0; i < fields.Len(); i++ {
 		field := fields.Get(i)
 		options := field.Options().(*descriptorpb.FieldOptions)
+		fieldName := field.TextName()
+		if field.JSONName() != "" {
+			fieldName = field.JSONName()
+		}
+		name := ""
+		if prefix == "" {
+			name = fieldName
+		} else {
+			name = fmt.Sprintf("%s.%s", prefix, fieldName)
+		}
+		if index != -1 {
+			name += fmt.Sprintf("[%d]", index)
+		}
 		proto.RangeExtensions(options, func(et protoreflect.ExtensionType, i interface{}) bool {
 			fullName := et.TypeDescriptor().FullName()
 			if fullName != protoreflect.FullName(validationTag) {
@@ -32,19 +45,6 @@ func Reflect(validationTag string, message proto.Message, vc map[string]func() (
 			rules, err := ExprParser(rule)
 			if err != nil {
 				panic(err)
-			}
-			fieldName := field.TextName()
-			if field.JSONName() != "" {
-				fieldName = field.JSONName()
-			}
-			name := ""
-			if prefix == "" {
-				name = fieldName
-			} else {
-				name = fmt.Sprintf("%s.%s", prefix, fieldName)
-			}
-			if index != -1 {
-				name += fmt.Sprintf("[%d]", index)
 			}
 			vc[name] = func() (bool, error) {
 				output := true
@@ -67,14 +67,14 @@ func Reflect(validationTag string, message proto.Message, vc map[string]func() (
 			if field.IsList() {
 				list := reflector.Get(field).List()
 				for i := 0; i < list.Len(); i++ {
-					err := Reflect(validationTag, list.Get(i).Message().Interface(), vc, field.TextName(), i)
+					err := Reflect(validationTag, list.Get(i).Message().Interface(), vc, name, i)
 					if err != nil {
 						return err
 					}
 				}
 				continue
 			}
-			err := Reflect(validationTag, reflector.Get(field).Message().Interface(), vc, field.TextName(), -1)
+			err := Reflect(validationTag, reflector.Get(field).Message().Interface(), vc, name, -1)
 			if err != nil {
 				return err
 			}

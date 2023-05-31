@@ -9,10 +9,10 @@ extend google.protobuf.FieldOptions {
 }
 
 message TestItem {
-    string testField = 1 [(validate) = "required|min_len:10|max_len:100"];
+    string testField = 1 [json_name = "test_field", (validate) = "required|min_len:10|max_len:100"];
 }
 
 message Test {
-    string fieldA = 1 [(validate) = "required|min_len:10|max_len:100"];
-    repeated TestItem testItem = 2 [(validate) = "required"];
+    string fieldA = 1 [json_name = "field_a", (validate) = "required|min_len:10|max_len:100"];
+    repeated TestItem testItem = 2 [json_name = "test_item", (validate) = "required"];
 }
