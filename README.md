@@ -33,8 +33,11 @@ In your Golang code, you can invoke your validation pattern by calling the `Vali
 
 You can register any validation function by calling the `Register` method. For example: 
 
-    protoval.Register("myValidationMethod", func(value any, rule string) (bool, error) {
-        ...
+    protoval.Register("myValidationMethod", func (name string, value any, rule string) error {
+        if value == nil {
+            return protoval.ErrorF("%s: is required", name)
+        }
+        return nil
     })
 
 You can also use Regex expressions out of the box by encapsulating them inside `/` character. For example: 
