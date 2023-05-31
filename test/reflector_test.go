@@ -10,7 +10,7 @@ import (
 func TestReflect(t *testing.T) {
 	test := Test{}
 	test.FieldA = "okk"
-	test.TestItem = append(test.TestItem, &TestItem{TestField: "okkkk"})
+	test.TestItem = append(test.TestItem, &TestItem{TestField: "okkkkkkkkkkkk"})
 	vc, err := protoval.Validate("validate", &test)
 	if err != nil {
 		t.FailNow()

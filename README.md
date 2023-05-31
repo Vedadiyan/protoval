@@ -46,4 +46,4 @@ You can also use Regex expressions out of the box by encapsulating them inside `
         string fieldA = 1 [(validate) = "required|min_len:10|max_len:100|/[Aa-Zz]*/"];
     }
 
-Regex expression can appear anywhere in the patter and NOT only at the end. 
+Regex expression can appear anywhere in the pattern and NOT only at the end. 
