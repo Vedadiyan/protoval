@@ -54,11 +54,17 @@ func Reflect(message proto.Message, vc map[string]func() (bool, error)) (err err
 			if field.IsList() {
 				list := reflector.Get(field).List()
 				for i := 0; i < list.Len(); i++ {
-					Reflect(list.Get(i).Message().Interface(), vc)
+					err := Reflect(list.Get(i).Message().Interface(), vc)
+					if err != nil {
+						return err
+					}
 				}
 				continue
 			}
-			Reflect(reflector.Get(field).Message().Interface(), vc)
+			err := Reflect(reflector.Get(field).Message().Interface(), vc)
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil
