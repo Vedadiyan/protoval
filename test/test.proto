@@ -9,5 +9,5 @@ extend google.protobuf.FieldOptions {
 }
 
 message Test {
-    string fieldA = 1 [(validate) = "required|email|min_len:10|max_len:10|/[Aa-Zz]*|\\//|UPPERCASE"];
+    string fieldA = 1 [(validate) = "required|min_len:10|max_len:100"];
 }
