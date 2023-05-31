@@ -9,7 +9,7 @@ import (
 
 func TestReflect(t *testing.T) {
 	test := Test{}
-	test.FieldA = "okkkkkkkkkkkkkkkkkkkkkkkkkkk"
+	test.FieldA = "222222222222222"
 	//test.TestItem = append(test.TestItem, &TestItem{TestField: "ok"})
 	vc := protoval.New("validate", &test)
 	err := vc.Validate()

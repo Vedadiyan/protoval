@@ -69,7 +69,7 @@ func Regex(name string, value any, rule string) error {
 		return err
 	}
 	if !ok {
-		return Error(name, fmt.Sprintf("value does not satisfy regex pattern: %s", rule))
+		return Error(name, fmt.Sprintf("must satisfy regex pattern: %s", rule))
 	}
 	return nil
 }
