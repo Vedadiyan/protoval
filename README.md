@@ -43,7 +43,7 @@ You can register any validation function by calling the `Register` method. For e
 You can also use Regex expressions out of the box by encapsulating them inside `/` character. For example: 
 
     message Test {
-        string fieldA = 1 [(validate) = "required|min_len:10|max_len:100|/[Aa-Zz]*/"];
+        string fieldA = 1 [(validate) = "required|min_len:10|max_len:100|/[A-Za-z]*/"];
     }
 
 Regex expression can appear anywhere in the pattern and NOT only at the end. 
