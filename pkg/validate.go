@@ -7,14 +7,14 @@ import (
 type ValidationContext struct {
 	validationTag string
 	message       proto.Message
-	errors        []error
+	errors        []*ValidationError
 }
 
 func New(validationTag string, message proto.Message) *ValidationContext {
 	validationContext := ValidationContext{
 		validationTag: validationTag,
 		message:       message,
-		errors:        make([]error, 0),
+		errors:        make([]*ValidationError, 0),
 	}
 	return &validationContext
 }
@@ -28,10 +28,11 @@ func (vc *ValidationContext) Validate() error {
 	for _, validator := range validators {
 		err := validator()
 		if err != nil {
-			if _, ok := err.(ValidationError); !ok {
+			validationError, ok := err.(*ValidationError)
+			if !ok {
 				return err
 			}
-			vc.errors = append(vc.errors, err)
+			vc.errors = append(vc.errors, validationError)
 		}
 	}
 	return nil
@@ -41,6 +42,6 @@ func (vc ValidationContext) IsValid() bool {
 	return len(vc.errors) == 0
 }
 
-func (vc ValidationContext) Errors() []error {
+func (vc ValidationContext) Errors() []*ValidationError {
 	return vc.errors
 }

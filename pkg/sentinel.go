@@ -1,13 +1,18 @@
 package protoval
 
-import "fmt"
-
-type ValidationError string
-
-func (protovalError ValidationError) Error() string {
-	return string(protovalError)
+type ValidationError struct {
+	fieldName string
+	message   string
 }
 
-func ErrorF(format string, a ...any) ValidationError {
-	return ValidationError(fmt.Sprintf(format, a...))
+func (protovalError ValidationError) Error() string {
+	return protovalError.message
+}
+
+func NewError(fieldName string, message string) *ValidationError {
+	validationError := ValidationError{
+		fieldName: fieldName,
+		message:   message,
+	}
+	return &validationError
 }
