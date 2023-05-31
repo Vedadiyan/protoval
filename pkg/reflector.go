@@ -8,7 +8,7 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
-func Reflect(message proto.Message, vc map[string]func() (bool, error)) (err error) {
+func Reflect(validationTag string, message proto.Message, vc map[string]func() (bool, error)) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = r.(error)
@@ -21,7 +21,7 @@ func Reflect(message proto.Message, vc map[string]func() (bool, error)) (err err
 		options := field.Options().(*descriptorpb.FieldOptions)
 		proto.RangeExtensions(options, func(et protoreflect.ExtensionType, i interface{}) bool {
 			fullName := et.TypeDescriptor().FullName()
-			if fullName == "validate" {
+			if fullName == protoreflect.FullName(validationTag) {
 				rule, ok := i.(string)
 				if !ok {
 					return true
@@ -54,14 +54,14 @@ func Reflect(message proto.Message, vc map[string]func() (bool, error)) (err err
 			if field.IsList() {
 				list := reflector.Get(field).List()
 				for i := 0; i < list.Len(); i++ {
-					err := Reflect(list.Get(i).Message().Interface(), vc)
+					err := Reflect(validationTag, list.Get(i).Message().Interface(), vc)
 					if err != nil {
 						return err
 					}
 				}
 				continue
 			}
-			err := Reflect(reflector.Get(field).Message().Interface(), vc)
+			err := Reflect(validationTag, reflector.Get(field).Message().Interface(), vc)
 			if err != nil {
 				return err
 			}

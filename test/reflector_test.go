@@ -12,7 +12,7 @@ func TestReflect(t *testing.T) {
 	test := Test{}
 	test.FieldA = "okk"
 	test.TestItem = append(test.TestItem, &TestItem{TestField: "okkkk"})
-	err := protoval.Reflect(&test, vc)
+	err := protoval.Reflect("validate", &test, vc)
 	if err != nil {
 		t.FailNow()
 	}
