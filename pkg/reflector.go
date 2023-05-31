@@ -33,11 +33,15 @@ func Reflect(validationTag string, message proto.Message, vc map[string]func() (
 			if err != nil {
 				panic(err)
 			}
+			fieldName := field.TextName()
+			if field.JSONName() != "" {
+				fieldName = field.JSONName()
+			}
 			name := ""
 			if prefix == "" {
-				name = field.TextName()
+				name = fieldName
 			} else {
-				name = fmt.Sprintf("%s.%s", prefix, field.TextName())
+				name = fmt.Sprintf("%s.%s", prefix, fieldName)
 			}
 			if index != -1 {
 				name += fmt.Sprintf("[%d]", index)
