@@ -9,7 +9,10 @@ import (
 
 func TestReflect(t *testing.T) {
 	vc := make(map[string]func() (bool, error))
-	err := protoval.Reflect(&Test{FieldA: "ooooooooooooook"}, vc)
+	test := Test{}
+	test.FieldA = "okk"
+	test.TestItem = append(test.TestItem, &TestItem{TestField: "okkkk"})
+	err := protoval.Reflect(&test, vc)
 	if err != nil {
 		t.FailNow()
 	}

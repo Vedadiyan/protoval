@@ -8,6 +8,11 @@ extend google.protobuf.FieldOptions {
     string validate = 10000;
 }
 
+message TestItem {
+    string testField = 1 [(validate) = "required|min_len:10|max_len:100"];
+}
+
 message Test {
     string fieldA = 1 [(validate) = "required|min_len:10|max_len:100"];
+    repeated TestItem testItem = 2 [(validate) = "required"];
 }
