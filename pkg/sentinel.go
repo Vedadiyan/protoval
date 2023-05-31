@@ -13,7 +13,7 @@ func (validationError ValidationError) Error() string {
 	return validationError.message
 }
 
-func NewError(fieldName string, message string) *ValidationError {
+func Error(fieldName string, message string) *ValidationError {
 	validationError := ValidationError{
 		fieldName: fieldName,
 		message:   message,

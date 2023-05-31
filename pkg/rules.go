@@ -22,7 +22,7 @@ func Register(name string, fn func(name string, value any, rule string) error) {
 
 func Required(name string, value any, rule string) error {
 	if value == nil {
-		return NewError(name, "is required")
+		return Error(name, "is required")
 	}
 	return nil
 }
@@ -37,7 +37,7 @@ func MinLen(name string, value any, rule string) error {
 		return err
 	}
 	if len(str) < int(i) {
-		return NewError(name, fmt.Sprintf("must be larger than or equal in size to %d", i))
+		return Error(name, fmt.Sprintf("must be larger than or equal in size to %d", i))
 	}
 	return nil
 }
@@ -52,7 +52,7 @@ func MaxLen(name string, value any, rule string) error {
 		return err
 	}
 	if len(str) > int(i) {
-		return NewError(name, fmt.Sprintf("must be smaller than or equal in size to %d", i))
+		return Error(name, fmt.Sprintf("must be smaller than or equal in size to %d", i))
 	}
 	return nil
 }
