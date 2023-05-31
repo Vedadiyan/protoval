@@ -35,7 +35,7 @@ You can register any validation function by calling the `Register` method. For e
 
     protoval.Register("myValidationMethod", func (name string, value any, rule string) error {
         if value == nil {
-            return protoval.NewError(name, fmt.Sprintf("%s: is required", name))
+            return protoval.NewError(name, "is required")
         }
         return nil
     })

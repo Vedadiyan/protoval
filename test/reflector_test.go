@@ -18,7 +18,7 @@ func TestReflect(t *testing.T) {
 	}
 	fmt.Println(vc.IsValid())
 	for _, err := range vc.Errors() {
-		fmt.Println(err)
+		fmt.Println(err.FieldName())
 	}
 }
 
